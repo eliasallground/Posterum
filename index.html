@@ -341,8 +341,11 @@ async function doRegister(){
 }
 
 function enterApp(){
-  document.getElementById('sa').classList.remove('active');
-  document.getElementById('sap').classList.add('active');
+  const sa = document.getElementById('sa');
+  const sap = document.getElementById('sap');
+  sa.style.display = 'none';
+  sap.style.display = 'flex';
+  sap.classList.add('active');
   updateBar();
   if(ADMINS.includes(CU.username))document.getElementById('n-admin').style.display='flex';
   loadListings();
@@ -534,8 +537,8 @@ async function renderProfile(){
 
 function doLogout(){
   CU=null;listings=[];
-  document.getElementById('sap').classList.remove('active');
-  document.getElementById('sa').classList.add('active');
+  document.getElementById('sap').style.display = 'none';
+document.getElementById('sa').style.display = 'flex';
   document.getElementById('n-admin').style.display='none';
   document.getElementById('lu').value='';
   document.getElementById('lp').value='';
