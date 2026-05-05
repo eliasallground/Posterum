@@ -1,57 +1,44 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8"/>
-<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
-<title>Posterum</title>
 <style>
-:root{--blk:#0f0f0f;--wht:#f5f5f0;--crm:#ede8df;--gld:#c8a96e;--gld2:#a8893e;--red:#c0392b;--gry:#888;--bdr:#ddd8ce;--crd:#ffffff;--rad:12px;--fn:'Helvetica Neue',Helvetica,Arial,sans-serif}
+:root{--blk:#2a1f18;--wht:#f5f0eb;--crm:#ede5d8;--red:#a84040;--red2:#8a3232;--terra:#c47a5a;--gold:#d4b896;--gold2:#b89870;--gry:#7a6a5a;--bdr:#ddd0c0;--crd:#ffffff;--rad:12px;--fn:'Helvetica Neue',Helvetica,Arial,sans-serif}
 *{box-sizing:border-box;margin:0;padding:0}
 body{font-family:var(--fn);background:var(--crm);color:var(--blk);min-height:100vh}
-.screen{display:none;min-height:100vh}
-.screen.active{display:block}
+.screen{display:none;min-height:100vh}.screen.active{display:block}
 #sa{background:var(--blk);display:flex;flex-direction:column;align-items:center;justify-content:center;padding:40px 24px}
 #sa.active{display:flex}
 .lw{text-align:center;margin-bottom:48px}
-.lm{width:72px;height:72px;background:var(--gld);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 16px;font-size:32px}
+.lm{width:72px;height:72px;background:var(--red);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 16px;font-size:32px}
 .lt{font-size:32px;font-weight:800;color:var(--wht);letter-spacing:2px;text-transform:uppercase}
-.ls{font-size:12px;color:var(--gld);letter-spacing:3px;text-transform:uppercase;margin-top:4px}
+.ls{font-size:12px;color:var(--terra);letter-spacing:3px;text-transform:uppercase;margin-top:4px}
 .ac{background:var(--wht);border-radius:var(--rad);padding:32px 28px;width:100%;max-width:400px}
 .atabs{display:flex;border-bottom:2px solid var(--bdr);margin-bottom:28px}
 .atab{flex:1;padding:10px;text-align:center;font-size:14px;font-weight:600;cursor:pointer;color:var(--gry);border-bottom:2px solid transparent;margin-bottom:-2px;transition:all .2s}
-.atab.active{color:var(--blk);border-bottom-color:var(--gld)}
-.apanel{display:none}
-.apanel.active{display:block}
+.atab.active{color:var(--blk);border-bottom-color:var(--red)}
+.apanel{display:none}.apanel.active{display:block}
 label{display:block;font-size:12px;font-weight:600;color:var(--gry);margin-bottom:6px;letter-spacing:.5px;text-transform:uppercase}
 input,select,textarea{width:100%;padding:12px 14px;border:1.5px solid var(--bdr);border-radius:8px;font-size:15px;font-family:var(--fn);background:var(--wht);color:var(--blk);margin-bottom:16px;transition:border-color .2s;outline:none}
-input:focus,select:focus,textarea:focus{border-color:var(--gld)}
+input:focus,select:focus,textarea:focus{border-color:var(--red)}
 textarea{resize:vertical;min-height:80px}
 .btn{display:block;width:100%;padding:14px;border:none;border-radius:8px;font-size:15px;font-weight:700;cursor:pointer;transition:all .2s;text-align:center;letter-spacing:.5px}
-.bp{background:var(--gld);color:var(--blk)}
-.bp:hover{background:var(--gld2)}
-.bs{background:var(--blk);color:var(--wht)}
-.bs:hover{background:#333}
-.bg{background:transparent;color:var(--gry);border:1.5px solid var(--bdr)}
-.bg:hover{border-color:var(--blk);color:var(--blk)}
+.bp{background:var(--red);color:var(--wht)}.bp:hover{background:var(--red2)}
+.bs{background:var(--blk);color:var(--wht)}.bs:hover{background:#4a3020}
+.bg{background:transparent;color:var(--gry);border:1.5px solid var(--bdr)}.bg:hover{border-color:var(--blk);color:var(--blk)}
 .bsm{padding:8px 16px;font-size:13px;width:auto;display:inline-block}
 .msg{font-size:13px;text-align:center;margin-top:12px;min-height:18px}
-.err{color:var(--red)}
-.ok{color:#27ae60}
+.err{color:var(--red)}.ok{color:#5a8a4a}
 #sap{background:var(--crm)}
 #sap.active{display:flex;flex-direction:column}
 .tb{background:var(--blk);padding:0 20px;height:56px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100}
 .tbl{font-size:20px;font-weight:800;color:var(--wht);letter-spacing:2px}
-.tbl span{color:var(--gld)}
+.tbl span{color:var(--terra)}
 .tbr{display:flex;align-items:center;gap:12px}
-.pb{background:var(--gld);color:var(--blk);font-size:12px;font-weight:700;padding:4px 10px;border-radius:20px;letter-spacing:.5px}
-.tav{width:32px;height:32px;border-radius:50%;background:var(--gld);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:13px;color:var(--blk);cursor:pointer}
+.pb{background:var(--gold);color:var(--blk);font-size:12px;font-weight:700;padding:4px 10px;border-radius:20px;letter-spacing:.5px}
+.tav{width:32px;height:32px;border-radius:50%;background:var(--red);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:13px;color:var(--wht);cursor:pointer}
 .mc{flex:1;padding-bottom:80px}
 .bn{position:fixed;bottom:0;left:0;right:0;background:var(--blk);display:flex;height:64px;z-index:100}
-.ni{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:pointer;color:#666;font-size:10px;font-weight:600;letter-spacing:.5px;text-transform:uppercase;gap:4px;transition:color .2s}
-.ni.active{color:var(--gld)}
+.ni{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:pointer;color:#7a6050;font-size:10px;font-weight:600;letter-spacing:.5px;text-transform:uppercase;gap:4px;transition:color .2s}
+.ni.active{color:var(--terra)}
 .ni svg{width:22px;height:22px}
-.view{display:none;padding:20px}
-.view.active{display:block}
+.view{display:none;padding:20px}.view.active{display:block}
 .fh{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px}
 .ft{font-size:22px;font-weight:800}
 .flt{display:flex;gap:8px;overflow-x:auto;padding-bottom:12px;margin-bottom:16px;scrollbar-width:none}
@@ -59,21 +46,19 @@ textarea{resize:vertical;min-height:80px}
 .fc{padding:6px 14px;border-radius:20px;font-size:12px;font-weight:600;white-space:nowrap;cursor:pointer;border:1.5px solid var(--bdr);background:var(--wht);color:var(--gry);transition:all .2s}
 .fc.active{background:var(--blk);color:var(--wht);border-color:var(--blk)}
 .lg{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
-.lc{background:var(--crd);border-radius:var(--rad);overflow:hidden;cursor:pointer;transition:transform .15s,box-shadow .15s;box-shadow:0 2px 8px rgba(0,0,0,.06)}
-.lc:hover{transform:translateY(-2px);box-shadow:0 6px 20px rgba(0,0,0,.12)}
+.lc{background:var(--crd);border-radius:var(--rad);overflow:hidden;cursor:pointer;transition:transform .15s,box-shadow .15s;box-shadow:0 2px 8px rgba(42,31,24,.08)}
+.lc:hover{transform:translateY(-2px);box-shadow:0 6px 20px rgba(42,31,24,.14)}
 .li{width:100%;aspect-ratio:1;background:var(--crm);display:flex;align-items:center;justify-content:center;font-size:48px;overflow:hidden}
 .li img{width:100%;height:100%;object-fit:cover}
 .lin{padding:10px 12px 12px}
 .ltt{font-size:13px;font-weight:700;margin-bottom:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .lm2{font-size:11px;color:var(--gry);margin-bottom:6px}
-.lp{font-size:15px;font-weight:800;color:var(--gld2)}
+.lp{font-size:15px;font-weight:800;color:var(--red)}
 .lp span{font-size:11px;font-weight:600;color:var(--gry)}
 .cb{display:inline-block;font-size:10px;font-weight:700;padding:2px 7px;border-radius:4px;text-transform:uppercase;letter-spacing:.5px;margin-left:4px}
-.cn{background:#e8f5e9;color:#2e7d32}
-.cl{background:#e3f2fd;color:#1565c0}
-.cg{background:#fff8e1;color:#f57f17}
-.cw{background:#fce4ec;color:#b71c1c}
-.mo{display:none;position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:200;align-items:flex-end;justify-content:center}
+.cn{background:#e8f5e9;color:#2e7d32}.cl{background:#e8f0f8;color:#1a4a7a}
+.cg{background:#fdf3e0;color:#7a5010}.cw{background:#fce8e8;color:#8a2020}
+.mo{display:none;position:fixed;inset:0;background:rgba(42,31,24,.6);z-index:200;align-items:flex-end;justify-content:center}
 .mo.open{display:flex}
 .md{background:var(--wht);border-radius:20px 20px 0 0;width:100%;max-width:500px;max-height:90vh;overflow-y:auto;padding:24px 24px 40px;position:relative}
 .mh{width:40px;height:4px;background:var(--bdr);border-radius:2px;margin:0 auto 20px}
@@ -81,59 +66,54 @@ textarea{resize:vertical;min-height:80px}
 .mimg img{width:100%;height:100%;object-fit:cover}
 .mt{font-size:22px;font-weight:800;margin-bottom:4px}
 .ms{font-size:13px;color:var(--gry);margin-bottom:12px}
-.mp{font-size:28px;font-weight:800;color:var(--gld2);margin-bottom:8px}
+.mp{font-size:28px;font-weight:800;color:var(--red);margin-bottom:8px}
 .mtgs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px}
 .tag{background:var(--crm);border:1px solid var(--bdr);font-size:11px;font-weight:600;padding:4px 10px;border-radius:20px;color:var(--gry)}
-.mds{font-size:14px;line-height:1.6;color:#444;margin-bottom:24px}
+.mds{font-size:14px;line-height:1.6;color:#5a4a3a;margin-bottom:24px}
 .mcl{position:absolute;top:16px;right:20px;font-size:24px;cursor:pointer;color:var(--gry);background:none;border:none}
 .stl{font-size:22px;font-weight:800;margin-bottom:20px}
 .ub{border:2px dashed var(--bdr);border-radius:var(--rad);padding:32px;text-align:center;cursor:pointer;margin-bottom:20px;transition:border-color .2s}
-.ub:hover{border-color:var(--gld)}
+.ub:hover{border-color:var(--red)}
 .ui{font-size:36px;margin-bottom:8px}
 .ub p{font-size:13px;color:var(--gry)}
 .ip{width:100%;border-radius:var(--rad);margin-bottom:20px;max-height:240px;object-fit:cover}
-.fr{display:flex;gap:12px}
-.fr>div{flex:1}
+.fr{display:flex;gap:12px}.fr>div{flex:1}
 .ph{background:var(--blk);border-radius:var(--rad);padding:28px 20px;text-align:center;margin-bottom:20px;color:var(--wht)}
-.pav{width:72px;height:72px;border-radius:50%;background:var(--gld);display:flex;align-items:center;justify-content:center;font-size:28px;font-weight:700;color:var(--blk);margin:0 auto 12px;overflow:hidden}
+.pav{width:72px;height:72px;border-radius:50%;background:var(--red);display:flex;align-items:center;justify-content:center;font-size:28px;font-weight:700;color:var(--wht);margin:0 auto 12px;overflow:hidden}
 .pav img{width:100%;height:100%;object-fit:cover}
-.pn{font-size:20px;font-weight:800}
-.phd{font-size:13px;color:var(--gld);margin-bottom:4px}
-.pg{font-size:12px;color:#888}
-.pd{background:var(--gld);color:var(--blk);border-radius:8px;padding:16px;text-align:center;margin:16px 0 20px}
+.pnm{font-size:20px;font-weight:800}
+.phd{font-size:13px;color:var(--terra);margin-bottom:4px}
+.pg{font-size:12px;color:#9a8070}
+.pd{background:var(--gold);color:var(--blk);border-radius:8px;padding:16px;text-align:center;margin:16px 0 20px}
 .pd .pn2{font-size:36px;font-weight:800}
 .pd .pl{font-size:12px;font-weight:600;letter-spacing:1px;text-transform:uppercase}
 .sl{font-size:11px;font-weight:700;color:var(--gry);letter-spacing:1px;text-transform:uppercase;margin-bottom:12px}
-.mlr{background:var(--wht);border-radius:10px;padding:12px 14px;display:flex;align-items:center;gap:12px;margin-bottom:8px;box-shadow:0 1px 4px rgba(0,0,0,.05)}
+.mlr{background:var(--wht);border-radius:10px;padding:12px 14px;display:flex;align-items:center;gap:12px;margin-bottom:8px;box-shadow:0 1px 4px rgba(42,31,24,.06)}
 .mlt{width:48px;height:48px;border-radius:8px;background:var(--crm);display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0;overflow:hidden}
 .mlt img{width:100%;height:100%;object-fit:cover}
 .mli{flex:1}
 .mlti{font-size:14px;font-weight:700}
-.mlp{font-size:12px;color:var(--gld2);font-weight:600}
+.mlp{font-size:12px;color:var(--red);font-weight:600}
 .sp{font-size:10px;font-weight:700;padding:3px 8px;border-radius:20px;text-transform:uppercase;letter-spacing:.5px}
-.sav{background:#e8f5e9;color:#2e7d32}
-.ssd{background:#fce4ec;color:#b71c1c}
-.tr{background:var(--wht);border-radius:10px;padding:14px;margin-bottom:8px;box-shadow:0 1px 4px rgba(0,0,0,.05)}
+.sav{background:#e8f5e9;color:#2e7d32}.ssd{background:#fce8e8;color:#8a2020}
+.tr{background:var(--wht);border-radius:10px;padding:14px;margin-bottom:8px;box-shadow:0 1px 4px rgba(42,31,24,.06)}
 .trt{font-size:14px;font-weight:700;margin-bottom:2px}
 .trm{font-size:12px;color:var(--gry)}
 .tra{font-size:15px;font-weight:800}
-.cr{color:#27ae60}
-.dr{color:var(--red)}
+.cr{color:#5a8a4a}.dr{color:var(--red)}
 .es{text-align:center;padding:48px 20px;color:var(--gry)}
 .es .ei{font-size:48px;margin-bottom:12px}
 .es p{font-size:14px}
 .ld{text-align:center;padding:40px;color:var(--gry);font-size:14px}
-.ab{background:var(--blk);color:var(--gld);font-size:10px;font-weight:700;padding:2px 8px;border-radius:4px;text-transform:uppercase;letter-spacing:1px;margin-left:8px}
-.adc{background:var(--wht);border-radius:var(--rad);padding:20px;margin-bottom:12px;box-shadow:0 1px 4px rgba(0,0,0,.05)}
+.ab{background:var(--red);color:var(--wht);font-size:10px;font-weight:700;padding:2px 8px;border-radius:4px;text-transform:uppercase;letter-spacing:1px;margin-left:8px}
+.adc{background:var(--wht);border-radius:var(--rad);padding:20px;margin-bottom:12px;box-shadow:0 1px 4px rgba(42,31,24,.06)}
 .aur{display:flex;align-items:center;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--bdr)}
 .aur:last-child{border-bottom:none}
 .tbar{display:flex;border-bottom:2px solid var(--bdr);margin-bottom:20px}
 .tbt{padding:10px 16px;font-size:13px;font-weight:600;cursor:pointer;color:var(--gry);border-bottom:2px solid transparent;margin-bottom:-2px;transition:all .2s}
-.tbt.active{color:var(--blk);border-bottom-color:var(--gld)}
-.cfb{background:#fff8e1;border:1.5px solid #f0c040;border-radius:10px;padding:16px;margin-bottom:16px;font-size:14px}
+.tbt.active{color:var(--blk);border-bottom-color:var(--red)}
+.cfb{background:#fdf3e0;border:1.5px solid var(--gold);border-radius:10px;padding:16px;margin-bottom:16px;font-size:14px;color:var(--blk)}
 </style>
-</head>
-<body>
 
 <div id="sa" class="screen active">
   <div class="lw">
@@ -187,7 +167,7 @@ textarea{resize:vertical;min-height:80px}
   <div class="mc">
     <div id="v-browse" class="view active">
       <div class="fh"><div class="ft">Browse 🥋</div></div>
-      <div class="flt" id="fbar">
+      <div class="flt">
         <div class="fc active" onclick="setFilter('all',this)">All</div>
         <div class="fc" onclick="setFilter('Gi',this)">Gi</div>
         <div class="fc" onclick="setFilter('No-Gi',this)">No-Gi</div>
@@ -278,7 +258,7 @@ textarea{resize:vertical;min-height:80px}
 </div>
 
 <div id="mover" class="mo" onclick="closeMo(event)">
-  <div class="md" id="mcon">
+  <div class="md">
     <div class="mh"></div>
     <button class="mcl" onclick="closeMo()">✕</button>
     <div id="mbody"></div>
@@ -341,10 +321,10 @@ async function doRegister(){
 }
 
 function enterApp(){
-  const sa = document.getElementById('sa');
-  const sap = document.getElementById('sap');
-  sa.style.display = 'none';
-  sap.style.display = 'flex';
+  const sa=document.getElementById('sa');
+  const sap=document.getElementById('sap');
+  sa.style.display='none';
+  sap.style.display='flex';
   sap.classList.add('active');
   updateBar();
   if(ADMINS.includes(CU.username))document.getElementById('n-admin').style.display='flex';
@@ -371,10 +351,7 @@ async function loadListings(){
     const d=await db('listings','GET',null,'?order=created_at.desc&status=eq.available');
     const ids=[...new Set(d.map(l=>l.seller_id))];
     let smap={};
-    if(ids.length){
-      const su=await db('users','GET',null,`?id=in.(${ids.join(',')})`);
-      su.forEach(u=>smap[u.id]=u);
-    }
+    if(ids.length){const su=await db('users','GET',null,`?id=in.(${ids.join(',')})`);su.forEach(u=>smap[u.id]=u)}
     listings=d.map(l=>({...l,seller:smap[l.seller_id]}));
     renderListings();
   }catch(e){document.getElementById('lgrid').innerHTML=`<div class="ld">Error: ${e.message}</div>`}
@@ -406,8 +383,7 @@ function renderListings(){
 }
 
 function openL(id){
-  const l=listings.find(x=>x.id===id);
-  if(!l)return;
+  const l=listings.find(x=>x.id===id);if(!l)return;
   const mine=l.seller_id===CU.id;
   const afford=CU.points>=l.price;
   document.getElementById('mbody').innerHTML=`
@@ -437,8 +413,7 @@ function closeMo(e){
 }
 
 async function doBuy(lid){
-  const l=listings.find(x=>x.id===lid);
-  if(!l)return;
+  const l=listings.find(x=>x.id===lid);if(!l)return;
   const m=document.getElementById('mam');
   m.textContent='Processing...';m.className='msg';
   try{
@@ -447,11 +422,10 @@ async function doBuy(lid){
     await db('users','PATCH',{points:seller.points+l.price},`?id=eq.${l.seller_id}`);
     await db('listings','PATCH',{status:'sold'},`?id=eq.${lid}`);
     await db('transactions','POST',{listing_id:lid,buyer_id:CU.id,seller_id:l.seller_id,amount:l.price});
-    CU.points-=l.price;
-    updateBar();
+    CU.points-=l.price;updateBar();
     listings=listings.filter(x=>x.id!==lid);
     renderListings();
-    m.textContent=`✅ Purchased! Coordinate pickup with @${seller.username}.`;
+    m.textContent=`Purchased! Coordinate pickup with @${seller.username}.`;
     m.className='msg ok';
     document.querySelector('#mbody button')?.remove();
   }catch(e){m.textContent=e.message;m.className='msg err'}
@@ -494,7 +468,7 @@ async function doList(){
     ['scat','ssz','scnd'].forEach(id=>document.getElementById(id).value='');
     document.getElementById('imgprev').style.display='none';
     imgB64=null;
-    m.textContent='✅ Listing posted!';m.className='msg ok';
+    m.textContent='Listing posted!';m.className='msg ok';
     setTimeout(()=>{m.textContent='';showView('browse')},1500);
   }catch(e){m.textContent=e.message;m.className='msg err'}
 }
@@ -511,7 +485,7 @@ async function renderProfile(){
     el.innerHTML=`
       <div class="ph">
         <div class="pav">${CU.name.charAt(0)}</div>
-        <div class="pn">${CU.name}${isA?'<span class="ab">Admin</span>':''}</div>
+        <div class="pnm">${CU.name}${isA?'<span class="ab">Admin</span>':''}</div>
         <div class="phd">@${CU.username}</div>
         <div class="pg">${CU.martial_art||''} ${CU.gym?'· '+CU.gym:''}</div>
       </div>
@@ -537,8 +511,10 @@ async function renderProfile(){
 
 function doLogout(){
   CU=null;listings=[];
-  document.getElementById('sap').style.display = 'none';
-document.getElementById('sa').style.display = 'flex';
+  const sa=document.getElementById('sa');
+  const sap=document.getElementById('sap');
+  sap.style.display='none';
+  sa.style.display='flex';
   document.getElementById('n-admin').style.display='none';
   document.getElementById('lu').value='';
   document.getElementById('lp').value='';
@@ -566,7 +542,7 @@ async function renderAdmin(){
           <div><strong>${u.name}</strong> <span style="color:var(--gry);font-size:12px">@${u.username}</span><br/>
           <span style="font-size:12px;color:var(--gry)">${u.martial_art||''} ${u.gym?'· '+u.gym:''}</span></div>
           <div style="display:flex;align-items:center;gap:8px">
-            <strong style="color:var(--gld2)">${u.points} PP</strong>
+            <strong style="color:var(--red)">${u.points} PP</strong>
             <button class="btn bp bsm" onclick="addPP('${u.id}',${u.points})">+ PP</button>
           </div>
         </div>`).join('')}
@@ -577,7 +553,7 @@ async function renderAdmin(){
         <div class="adc" style="padding:14px">
           <div style="display:flex;justify-content:space-between;align-items:flex-start">
             <div><strong>${l.title}</strong><br/><span style="font-size:12px;color:var(--gry)">${l.category||''} · ${l.size||''} · ${l.condition||''}</span></div>
-            <div style="text-align:right"><div style="font-weight:700;color:var(--gld2)">${l.price} PP</div>
+            <div style="text-align:right"><div style="font-weight:700;color:var(--red)">${l.price} PP</div>
             <div class="sp ${l.status==='available'?'sav':'ssd'}" style="display:inline-block;margin-top:4px">${l.status}</div></div>
           </div>
           ${l.status==='available'?`<button class="btn bg bsm" style="margin-top:10px" onclick="adminDel('${l.id}')">Remove</button>`:''}
@@ -600,10 +576,9 @@ async function renderAdmin(){
 async function addPP(uid,cur){
   const a=prompt('How many Posterum Points to add?','100');
   if(!a||isNaN(parseInt(a)))return;
-  const add=parseInt(a);
   try{
-    await db('users','PATCH',{points:cur+add},`?id=eq.${uid}`);
-    if(uid===CU.id){CU.points+=add;updateBar()}
+    await db('users','PATCH',{points:cur+parseInt(a)},`?id=eq.${uid}`);
+    if(uid===CU.id){CU.points+=parseInt(a);updateBar()}
     renderAdmin();
   }catch(e){alert(e.message)}
 }
@@ -618,5 +593,3 @@ document.addEventListener('keydown',e=>{
   if(e.key==='Enter'&&document.getElementById('ap-login').classList.contains('active'))doLogin();
 });
 </script>
-</body>
-</html>
