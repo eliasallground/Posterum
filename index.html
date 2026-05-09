@@ -1,127 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Posterum</title>
 <style>
-:root{--blk:#2a1f18;--wht:#f5f0eb;--crm:#ede5d8;--red:#a84040;--red2:#8a3232;--terra:#c47a5a;--gold:#d4b896;--gold2:#b89870;--gry:#7a6a5a;--bdr:#ddd0c0;--crd:#ffffff;--rad:12px;--fn:'Helvetica Neue',Helvetica,Arial,sans-serif}
-*{box-sizing:border-box;margin:0;padding:0}
-body{font-family:var(--fn);background:var(--crm);color:var(--blk);min-height:100vh}
+:root{
+  --blk:#2a1f18;--wht:#fdf8f2;--crm:#f5ede0;--red:#b84444;--red2:#8a3030;
+  --terra:#c47a5a;--gold:#d4b896;--gold2:#a8845a;--gry:#8a7060;
+  --bdr:#e0d0bc;--crd:#ffffff;--rad:14px;--fn:'Helvetica Neue',Helvetica,Arial,sans-serif;
+  --nav:#2a1f18;--nav-h:68px;--top:56px;
+}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+body{font-family:var(--fn);background:var(--crm);color:var(--blk);min-height:100vh;overflow-x:hidden}
 .screen{display:none;min-height:100vh}.screen.active{display:block}
-#sa{background:var(--blk);display:flex;flex-direction:column;align-items:center;justify-content:center;padding:40px 24px}
+
+/* AUTH */
+#sa{background:var(--blk);display:flex;flex-direction:column;align-items:center;justify-content:center;padding:40px 24px;min-height:100vh}
 #sa.active{display:flex}
-.lw{text-align:center;margin-bottom:48px}
-.lm{width:72px;height:72px;background:var(--red);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 16px;font-size:32px}
-.lt{font-size:32px;font-weight:800;color:var(--wht);letter-spacing:2px;text-transform:uppercase}
-.ls{font-size:12px;color:var(--terra);letter-spacing:3px;text-transform:uppercase;margin-top:4px}
-.ac{background:var(--wht);border-radius:var(--rad);padding:32px 28px;width:100%;max-width:400px}
-.atabs{display:flex;border-bottom:2px solid var(--bdr);margin-bottom:28px}
-.atab{flex:1;padding:10px;text-align:center;font-size:14px;font-weight:600;cursor:pointer;color:var(--gry);border-bottom:2px solid transparent;margin-bottom:-2px;transition:all .2s}
+.lw{text-align:center;margin-bottom:40px}
+.lmark{width:80px;height:80px;background:var(--red);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 16px;font-size:36px}
+.ltitle{font-size:34px;font-weight:800;color:var(--wht);letter-spacing:3px;text-transform:uppercase}
+.lsub{font-size:11px;color:var(--terra);letter-spacing:3px;text-transform:uppercase;margin-top:6px}
+.acard{background:var(--wht);border-radius:20px;padding:32px 28px;width:100%;max-width:420px;box-shadow:0 8px 40px rgba(0,0,0,.3)}
+.atabs{display:flex;border-bottom:2px solid var(--bdr);margin-bottom:24px}
+.atab{flex:1;padding:12px;text-align:center;font-size:14px;font-weight:700;cursor:pointer;color:var(--gry);border-bottom:2px solid transparent;margin-bottom:-2px;transition:all .2s;letter-spacing:.3px}
 .atab.active{color:var(--blk);border-bottom-color:var(--red)}
 .apanel{display:none}.apanel.active{display:block}
-label{display:block;font-size:12px;font-weight:600;color:var(--gry);margin-bottom:6px;letter-spacing:.5px;text-transform:uppercase}
-input,select,textarea{width:100%;padding:12px 14px;border:1.5px solid var(--bdr);border-radius:8px;font-size:15px;font-family:var(--fn);background:var(--wht);color:var(--blk);margin-bottom:16px;transition:border-color .2s;outline:none}
+label{display:block;font-size:11px;font-weight:700;color:var(--gry);margin-bottom:5px;letter-spacing:.8px;text-transform:uppercase}
+input,select,textarea{width:100%;padding:13px 15px;border:1.5px solid var(--bdr);border-radius:10px;font-size:15px;font-family:var(--fn);background:var(--wht);color:var(--blk);margin-bottom:14px;outline:none;transition:border-color .2s}
 input:focus,select:focus,textarea:focus{border-color:var(--red)}
 textarea{resize:vertical;min-height:80px}
-.btn{display:block;width:100%;padding:14px;border:none;border-radius:8px;font-size:15px;font-weight:700;cursor:pointer;transition:all .2s;text-align:center;letter-spacing:.5px}
-.bp{background:var(--red);color:var(--wht)}.bp:hover{background:var(--red2)}
-.bs{background:var(--blk);color:var(--wht)}.bs:hover{background:#4a3020}
+.btn{display:block;width:100%;padding:15px;border:none;border-radius:10px;font-size:15px;font-weight:700;cursor:pointer;transition:all .2s;text-align:center;letter-spacing:.5px}
+.bp{background:var(--red);color:#fff}.bp:hover{background:var(--red2)}
+.bp:active{transform:scale(.98)}
 .bg{background:transparent;color:var(--gry);border:1.5px solid var(--bdr)}.bg:hover{border-color:var(--blk);color:var(--blk)}
-.bsm{padding:8px 16px;font-size:13px;width:auto;display:inline-block}
-.msg{font-size:13px;text-align:center;margin-top:12px;min-height:18px}
-.err{color:var(--red)}.ok{color:#5a8a4a}
+.bsm{padding:9px 18px;font-size:13px;width:auto;display:inline-block;border-radius:8px}
+.msg{font-size:13px;text-align:center;margin-top:10px;min-height:18px}
+.err{color:var(--red)}.ok{color:#4a8a50}
+
+/* APP */
 #sap{background:var(--crm)}
 #sap.active{display:flex;flex-direction:column}
-.tb{background:var(--blk);padding:0 20px;height:56px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100}
-.tbl{font-size:20px;font-weight:800;color:var(--wht);letter-spacing:2px}
+.tb{background:var(--blk);padding:0 20px;height:var(--top);display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;box-shadow:0 2px 12px rgba(0,0,0,.2)}
+.tbl{font-size:22px;font-weight:800;color:var(--wht);letter-spacing:2px}
 .tbl span{color:var(--terra)}
-.tbr{display:flex;align-items:center;gap:12px}
-.pb{background:var(--gold);color:var(--blk);font-size:12px;font-weight:700;padding:4px 10px;border-radius:20px;letter-spacing:.5px}
-.tav{width:32px;height:32px;border-radius:50%;background:var(--red);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:13px;color:var(--wht);cursor:pointer}
-.mc{flex:1;padding-bottom:80px}
-.bn{position:fixed;bottom:0;left:0;right:0;background:var(--blk);display:flex;height:64px;z-index:100}
-.ni{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:pointer;color:#7a6050;font-size:10px;font-weight:600;letter-spacing:.5px;text-transform:uppercase;gap:4px;transition:color .2s}
-.ni.active{color:var(--terra)}
-.ni svg{width:22px;height:22px}
+.tbr{display:flex;align-items:center;gap:10px}
+.pts-badge{background:var(--gold);color:var(--blk);font-size:12px;font-weight:700;padding:5px 12px;border-radius:20px;letter-spacing:.5px}
+.notif-btn{position:relative;width:36px;height:36px;display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--gold)}
+.notif-dot{position:absolute;top:4px;right:4px;width:10px;height:10px;background:var(--red);border-radius:50%;border:2px solid var(--blk);display:none}
+.notif-dot.show{display:block}
+.tav{width:36px;height:36px;border-radius:50%;background:var(--red);display:flex;align-items:center;justify-content:center;font-weight:800;font-size:14px;color:#fff;cursor:pointer;border:2px solid rgba(255,255,255,.2)}
+.mc{flex:1;padding-bottom:calc(var(--nav-h) + 16px)}
+
+/* BOTTOM NAV */
+.bn{position:fixed;bottom:0;left:0;right:0;background:var(--nav);display:flex;height:var(--nav-h);z-index:100;box-shadow:0 -2px 20px rgba(0,0,0,.3);border-top:1px solid rgba(255,255,255,.06)}
+.ni{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:pointer;color:rgba(255,255,255,.35);font-size:10px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;gap:5px;transition:color .2s;position:relative}
+.ni.active{color:#fff}
+.ni.active::after{content:'';position:absolute;top:0;left:20%;right:20%;height:2px;background:var(--red);border-radius:0 0 2px 2px}
+.ni svg{width:24px;height:24px;stroke-width:1.8}
+.ni-label{font-size:10px}
+.sell-ni{background:var(--red);border-radius:50%;width:48px;height:48px;display:flex;align-items:center;justify-content:center;margin-bottom:2px;box-shadow:0 4px 12px rgba(184,68,68,.5)}
+.sell-ni svg{stroke:#fff;width:26px;height:26px}
+
+/* VIEWS */
 .view{display:none;padding:20px}.view.active{display:block}
-.fh{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px}
-.ft{font-size:22px;font-weight:800}
+
+/* BROWSE */
+.page-title{font-size:24px;font-weight:800;margin-bottom:16px}
 .flt{display:flex;gap:8px;overflow-x:auto;padding-bottom:12px;margin-bottom:16px;scrollbar-width:none}
 .flt::-webkit-scrollbar{display:none}
-.fc{padding:6px 14px;border-radius:20px;font-size:12px;font-weight:600;white-space:nowrap;cursor:pointer;border:1.5px solid var(--bdr);background:var(--wht);color:var(--gry);transition:all .2s}
-.fc.active{background:var(--blk);color:var(--wht);border-color:var(--blk)}
-.lg{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
-.lc{background:var(--crd);border-radius:var(--rad);overflow:hidden;cursor:pointer;transition:transform .15s,box-shadow .15s;box-shadow:0 2px 8px rgba(42,31,24,.08)}
-.lc:hover{transform:translateY(-2px);box-shadow:0 6px 20px rgba(42,31,24,.14)}
-.li{width:100%;aspect-ratio:1;background:var(--crm);display:flex;align-items:center;justify-content:center;font-size:48px;overflow:hidden}
+.fc{padding:7px 16px;border-radius:20px;font-size:12px;font-weight:700;white-space:nowrap;cursor:pointer;border:1.5px solid var(--bdr);background:var(--wht);color:var(--gry);transition:all .2s;letter-spacing:.3px}
+.fc.active{background:var(--blk);color:#fff;border-color:var(--blk)}
+.lg{display:grid;grid-template-columns:repeat(2,1fr);gap:14px}
+.lc{background:var(--crd);border-radius:var(--rad);overflow:hidden;cursor:pointer;transition:transform .15s,box-shadow .15s;box-shadow:0 2px 10px rgba(42,31,24,.1)}
+.lc:active{transform:scale(.97)}
+.li{width:100%;aspect-ratio:1;background:var(--crm);display:flex;align-items:center;justify-content:center;font-size:52px;overflow:hidden;position:relative}
 .li img{width:100%;height:100%;object-fit:cover}
-.lin{padding:10px 12px 12px}
-.ltt{font-size:13px;font-weight:700;margin-bottom:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.lin{padding:11px 13px 14px}
+.ltt{font-size:13px;font-weight:700;margin-bottom:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:var(--blk)}
 .lm2{font-size:11px;color:var(--gry);margin-bottom:6px}
-.lp{font-size:15px;font-weight:800;color:var(--red)}
+.lp{font-size:16px;font-weight:800;color:var(--red)}
 .lp span{font-size:11px;font-weight:600;color:var(--gry)}
 .cb{display:inline-block;font-size:10px;font-weight:700;padding:2px 7px;border-radius:4px;text-transform:uppercase;letter-spacing:.5px;margin-left:4px}
-.cn{background:#e8f5e9;color:#2e7d32}.cl{background:#e8f0f8;color:#1a4a7a}
+.cn{background:#e6f4ea;color:#1e6b30}.cl{background:#e3eef8;color:#1a4478}
 .cg{background:#fdf3e0;color:#7a5010}.cw{background:#fce8e8;color:#8a2020}
-.mo{display:none;position:fixed;inset:0;background:rgba(42,31,24,.6);z-index:200;align-items:flex-end;justify-content:center}
+
+/* MODAL - CENTERED */
+.mo{display:none;position:fixed;inset:0;background:rgba(42,31,24,.65);z-index:200;align-items:center;justify-content:center;padding:20px}
 .mo.open{display:flex}
-.md{background:var(--wht);border-radius:20px 20px 0 0;width:100%;max-width:500px;max-height:90vh;overflow-y:auto;padding:24px 24px 40px;position:relative}
-.mh{width:40px;height:4px;background:var(--bdr);border-radius:2px;margin:0 auto 20px}
-.mimg{width:100%;aspect-ratio:1;background:var(--crm);border-radius:var(--rad);display:flex;align-items:center;justify-content:center;font-size:80px;margin-bottom:20px;overflow:hidden}
+.md{background:var(--wht);border-radius:20px;width:100%;max-width:440px;max-height:88vh;overflow-y:auto;padding:24px;position:relative;box-shadow:0 20px 60px rgba(0,0,0,.3)}
+.mcl{position:absolute;top:16px;right:16px;width:32px;height:32px;border-radius:50%;background:var(--crm);border:none;font-size:18px;cursor:pointer;color:var(--gry);display:flex;align-items:center;justify-content:center}
+.mimg{width:100%;aspect-ratio:4/3;background:var(--crm);border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:72px;margin-bottom:18px;overflow:hidden}
 .mimg img{width:100%;height:100%;object-fit:cover}
-.mt{font-size:22px;font-weight:800;margin-bottom:4px}
-.ms{font-size:13px;color:var(--gry);margin-bottom:12px}
-.mp{font-size:28px;font-weight:800;color:var(--red);margin-bottom:8px}
-.mtgs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px}
+.mt2{font-size:20px;font-weight:800;margin-bottom:3px}
+.ms2{font-size:13px;color:var(--gry);margin-bottom:10px}
+.mp2{font-size:26px;font-weight:800;color:var(--red);margin-bottom:10px}
+.mtgs{display:flex;gap:7px;flex-wrap:wrap;margin-bottom:14px}
 .tag{background:var(--crm);border:1px solid var(--bdr);font-size:11px;font-weight:600;padding:4px 10px;border-radius:20px;color:var(--gry)}
-.mds{font-size:14px;line-height:1.6;color:#5a4a3a;margin-bottom:24px}
-.mcl{position:absolute;top:16px;right:20px;font-size:24px;cursor:pointer;color:var(--gry);background:none;border:none}
-.stl{font-size:22px;font-weight:800;margin-bottom:20px}
-.ub{border:2px dashed var(--bdr);border-radius:var(--rad);padding:32px;text-align:center;cursor:pointer;margin-bottom:20px;transition:border-color .2s}
-.ub:hover{border-color:var(--red)}
-.ui{font-size:36px;margin-bottom:8px}
-.ub p{font-size:13px;color:var(--gry)}
-.ip{width:100%;border-radius:var(--rad);margin-bottom:20px;max-height:240px;object-fit:cover}
+.mds{font-size:14px;line-height:1.6;color:#5a4a3a;margin-bottom:20px}
+
+/* SELL */
+.ub{border:2px dashed var(--bdr);border-radius:var(--rad);padding:36px;text-align:center;cursor:pointer;margin-bottom:20px;transition:all .2s;background:var(--wht)}
+.ub:hover{border-color:var(--red);background:var(--crm)}
+.ub:active{transform:scale(.98)}
+.ui{font-size:40px;margin-bottom:8px}
+.ub p{font-size:13px;color:var(--gry);font-weight:500}
+.ip{width:100%;border-radius:var(--rad);margin-bottom:20px;max-height:260px;object-fit:cover}
 .fr{display:flex;gap:12px}.fr>div{flex:1}
-.ph{background:var(--blk);border-radius:var(--rad);padding:28px 20px;text-align:center;margin-bottom:20px;color:var(--wht)}
-.pav{width:72px;height:72px;border-radius:50%;background:var(--red);display:flex;align-items:center;justify-content:center;font-size:28px;font-weight:700;color:var(--wht);margin:0 auto 12px;overflow:hidden}
+
+/* PROFILE */
+.ph{background:var(--blk);border-radius:var(--rad);padding:28px 20px;text-align:center;margin-bottom:20px;color:#fff}
+.pav{width:76px;height:76px;border-radius:50%;background:var(--red);display:flex;align-items:center;justify-content:center;font-size:30px;font-weight:800;color:#fff;margin:0 auto 12px;overflow:hidden;border:3px solid rgba(255,255,255,.15)}
 .pav img{width:100%;height:100%;object-fit:cover}
 .pnm{font-size:20px;font-weight:800}
 .phd{font-size:13px;color:var(--terra);margin-bottom:4px}
 .pg{font-size:12px;color:#9a8070}
-.pd{background:var(--gold);color:var(--blk);border-radius:8px;padding:16px;text-align:center;margin:16px 0 20px}
-.pd .pn2{font-size:36px;font-weight:800}
-.pd .pl{font-size:12px;font-weight:600;letter-spacing:1px;text-transform:uppercase}
-.sl{font-size:11px;font-weight:700;color:var(--gry);letter-spacing:1px;text-transform:uppercase;margin-bottom:12px}
-.mlr{background:var(--wht);border-radius:10px;padding:12px 14px;display:flex;align-items:center;gap:12px;margin-bottom:8px;box-shadow:0 1px 4px rgba(42,31,24,.06)}
-.mlt{width:48px;height:48px;border-radius:8px;background:var(--crm);display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0;overflow:hidden}
+.ppts{background:var(--gold);color:var(--blk);border-radius:10px;padding:18px;text-align:center;margin:0 0 20px}
+.ppts-n{font-size:38px;font-weight:800}
+.ppts-l{font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;margin-top:2px}
+.sec-label{font-size:11px;font-weight:700;color:var(--gry);letter-spacing:1px;text-transform:uppercase;margin-bottom:12px;padding-top:4px}
+.mlr{background:var(--wht);border-radius:12px;padding:13px 15px;display:flex;align-items:center;gap:12px;margin-bottom:8px;box-shadow:0 1px 6px rgba(42,31,24,.07)}
+.mlt{width:50px;height:50px;border-radius:10px;background:var(--crm);display:flex;align-items:center;justify-content:center;font-size:24px;flex-shrink:0;overflow:hidden}
 .mlt img{width:100%;height:100%;object-fit:cover}
 .mli{flex:1}
 .mlti{font-size:14px;font-weight:700}
 .mlp{font-size:12px;color:var(--red);font-weight:600}
-.sp{font-size:10px;font-weight:700;padding:3px 8px;border-radius:20px;text-transform:uppercase;letter-spacing:.5px}
-.sav{background:#e8f5e9;color:#2e7d32}.ssd{background:#fce8e8;color:#8a2020}
-.tr{background:var(--wht);border-radius:10px;padding:14px;margin-bottom:8px;box-shadow:0 1px 4px rgba(42,31,24,.06)}
+.sp{font-size:10px;font-weight:700;padding:4px 9px;border-radius:20px;text-transform:uppercase;letter-spacing:.5px}
+.sav{background:#e6f4ea;color:#1e6b30}.ssd{background:#fce8e8;color:#8a2020}.sshp{background:#e8f0ff;color:#1a3a8a}
+.tr{background:var(--wht);border-radius:12px;padding:14px 16px;margin-bottom:8px;box-shadow:0 1px 6px rgba(42,31,24,.07)}
 .trt{font-size:14px;font-weight:700;margin-bottom:2px}
 .trm{font-size:12px;color:var(--gry)}
 .tra{font-size:15px;font-weight:800}
-.cr{color:#5a8a4a}.dr{color:var(--red)}
-.es{text-align:center;padding:48px 20px;color:var(--gry)}
-.es .ei{font-size:48px;margin-bottom:12px}
-.es p{font-size:14px}
-.ld{text-align:center;padding:40px;color:var(--gry);font-size:14px}
-.ab{background:var(--red);color:var(--wht);font-size:10px;font-weight:700;padding:2px 8px;border-radius:4px;text-transform:uppercase;letter-spacing:1px;margin-left:8px}
-.adc{background:var(--wht);border-radius:var(--rad);padding:20px;margin-bottom:12px;box-shadow:0 1px 4px rgba(42,31,24,.06)}
-.aur{display:flex;align-items:center;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--bdr)}
+.txcr{color:#4a8a50}.txdr{color:var(--red)}
+
+/* NOTIFICATIONS */
+.notif-view{padding:20px}
+.notif-item{background:var(--wht);border-radius:12px;padding:16px;margin-bottom:10px;box-shadow:0 1px 6px rgba(42,31,24,.07);cursor:pointer;border-left:3px solid transparent}
+.notif-item.unread{border-left-color:var(--red);background:#fffaf7}
+.notif-title{font-size:14px;font-weight:700;margin-bottom:3px}
+.notif-body{font-size:13px;color:var(--gry);line-height:1.5}
+.notif-time{font-size:11px;color:var(--gry);margin-top:6px}
+
+/* SHIPPING WIZARD */
+.wizard{padding:0}
+.wiz-step{display:none}.wiz-step.active{display:block}
+.wiz-header{background:var(--blk);border-radius:12px;padding:20px;margin-bottom:20px;text-align:center;color:#fff}
+.wiz-icon{font-size:48px;margin-bottom:10px}
+.wiz-title{font-size:18px;font-weight:800;margin-bottom:6px}
+.wiz-sub{font-size:13px;color:#9a8070;line-height:1.5}
+.wiz-step-count{font-size:11px;color:var(--terra);font-weight:700;letter-spacing:1px;text-transform:uppercase;margin-bottom:6px}
+.wiz-card{background:var(--wht);border-radius:12px;padding:16px;margin-bottom:14px;border:1.5px solid var(--bdr)}
+.wiz-card-title{font-size:12px;font-weight:700;color:var(--gry);letter-spacing:.8px;text-transform:uppercase;margin-bottom:10px}
+.mock-label{background:var(--crm);border:2px dashed var(--bdr);border-radius:10px;padding:18px;font-size:12px;line-height:1.8;font-family:monospace;margin-bottom:14px}
+.mock-label strong{font-size:14px;display:block;margin-bottom:6px;font-family:var(--fn)}
+.wiz-actions{display:flex;gap:10px;margin-top:6px}
+.wiz-actions .btn{flex:1}
+.progress-bar{display:flex;gap:6px;margin-bottom:20px}
+.prog-dot{flex:1;height:4px;background:var(--bdr);border-radius:2px;transition:background .3s}
+.prog-dot.done{background:var(--red)}
+
+/* ADMIN */
+.adc{background:var(--wht);border-radius:var(--rad);padding:20px;margin-bottom:12px;box-shadow:0 1px 6px rgba(42,31,24,.07)}
+.aur{display:flex;align-items:center;justify-content:space-between;padding:11px 0;border-bottom:1px solid var(--bdr)}
 .aur:last-child{border-bottom:none}
 .tbar{display:flex;border-bottom:2px solid var(--bdr);margin-bottom:20px}
-.tbt{padding:10px 16px;font-size:13px;font-weight:600;cursor:pointer;color:var(--gry);border-bottom:2px solid transparent;margin-bottom:-2px;transition:all .2s}
+.tbt{padding:10px 16px;font-size:13px;font-weight:700;cursor:pointer;color:var(--gry);border-bottom:2px solid transparent;margin-bottom:-2px;transition:all .2s}
 .tbt.active{color:var(--blk);border-bottom-color:var(--red)}
 .cfb{background:#fdf3e0;border:1.5px solid var(--gold);border-radius:10px;padding:16px;margin-bottom:16px;font-size:14px;color:var(--blk)}
+.ab{background:var(--red);color:#fff;font-size:10px;font-weight:700;padding:2px 8px;border-radius:4px;text-transform:uppercase;letter-spacing:1px;margin-left:8px}
+.es{text-align:center;padding:48px 20px;color:var(--gry)}
+.es-icon{font-size:48px;margin-bottom:12px}
+.es p{font-size:14px}
+.ld{text-align:center;padding:40px;color:var(--gry);font-size:14px}
 </style>
+</head>
+<body>
 
+<!-- AUTH -->
 <div id="sa" class="screen active">
   <div class="lw">
-    <div class="lm">🥋</div>
-    <div class="lt">Posterum</div>
-    <div class="ls">The Martial Arts Marketplace</div>
+    <div class="lmark">🥋</div>
+    <div class="ltitle">Posterum</div>
+    <div class="lsub">The Martial Arts Marketplace</div>
   </div>
-  <div class="ac">
+  <div class="acard">
     <div class="atabs">
       <div class="atab active" onclick="switchTab('login')">Sign In</div>
       <div class="atab" onclick="switchTab('register')">Join</div>
@@ -156,17 +219,24 @@ textarea{resize:vertical;min-height:80px}
   </div>
 </div>
 
+<!-- APP -->
 <div id="sap" class="screen">
   <div class="tb">
     <div class="tbl">POST<span>ERUM</span></div>
     <div class="tbr">
-      <div class="pb" id="tpts">500 PP</div>
+      <div class="pts-badge" id="tpts">500 PP</div>
+      <div class="notif-btn" onclick="showView('notifs')" title="Notifications">
+        <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" width="22" height="22"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+        <div class="notif-dot" id="ndot"></div>
+      </div>
       <div class="tav" id="tav" onclick="showView('profile')">?</div>
     </div>
   </div>
+
   <div class="mc">
+    <!-- BROWSE -->
     <div id="v-browse" class="view active">
-      <div class="fh"><div class="ft">Browse 🥋</div></div>
+      <div class="page-title">Browse 🥋</div>
       <div class="flt">
         <div class="fc active" onclick="setFilter('all',this)">All</div>
         <div class="fc" onclick="setFilter('Gi',this)">Gi</div>
@@ -178,8 +248,9 @@ textarea{resize:vertical;min-height:80px}
       <div id="lgrid" class="lg"><div class="ld">Loading listings...</div></div>
     </div>
 
+    <!-- SELL -->
     <div id="v-sell" class="view">
-      <div class="stl">List an Item</div>
+      <div class="page-title">List an Item</div>
       <div class="ub" onclick="document.getElementById('imgup').click()">
         <div class="ui">📸</div>
         <p>Tap to add a photo</p>
@@ -201,16 +272,14 @@ textarea{resize:vertical;min-height:80px}
             <option value="">Size</option>
             <option>A0</option><option>A1</option><option>A2</option><option>A3</option>
             <option>A4</option><option>A5</option><option>S</option><option>M</option>
-            <option>L</option><option>XL</option><option>XXL</option>
-            <option>Kids</option><option>One Size</option>
+            <option>L</option><option>XL</option><option>XXL</option><option>Kids</option><option>One Size</option>
           </select>
         </div>
         <div>
           <label>Condition</label>
           <select id="scnd">
             <option value="">Condition</option>
-            <option>New</option><option>Like New</option>
-            <option>Good</option><option>Well Worn</option>
+            <option>New</option><option>Like New</option><option>Good</option><option>Well Worn</option>
           </select>
         </div>
       </div>
@@ -222,16 +291,24 @@ textarea{resize:vertical;min-height:80px}
       <div id="sm" class="msg"></div>
     </div>
 
+    <!-- PROFILE -->
     <div id="v-profile" class="view">
       <div id="pcon"></div>
     </div>
 
+    <!-- NOTIFICATIONS -->
+    <div id="v-notifs" class="view">
+      <div class="page-title">Notifications 🔔</div>
+      <div id="notif-list"><div class="ld">Loading...</div></div>
+    </div>
+
+    <!-- ADMIN -->
     <div id="v-admin" class="view">
-      <div class="stl">Admin Panel</div>
+      <div class="page-title">Admin Panel</div>
       <div class="tbar">
-        <div class="tbt active" onclick="adminTab('users',this)">Users</div>
-        <div class="tbt" onclick="adminTab('listings',this)">Listings</div>
-        <div class="tbt" onclick="adminTab('txs',this)">Transactions</div>
+        <div class="tbt active" onclick="aTab('users',this)">Users</div>
+        <div class="tbt" onclick="aTab('listings',this)">Listings</div>
+        <div class="tbt" onclick="aTab('txs',this)">Transactions</div>
       </div>
       <div id="acon"><div class="ld">Loading...</div></div>
     </div>
@@ -239,29 +316,37 @@ textarea{resize:vertical;min-height:80px}
 
   <nav class="bn">
     <div class="ni active" id="n-browse" onclick="showView('browse')">
-      <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
-      Browse
+      <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+      <span class="ni-label">Browse</span>
     </div>
     <div class="ni" id="n-sell" onclick="showView('sell')">
-      <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg>
-      Sell
+      <div class="sell-ni"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg></div>
+      <span class="ni-label">Sell</span>
     </div>
     <div class="ni" id="n-profile" onclick="showView('profile')">
-      <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>
-      Profile
+      <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>
+      <span class="ni-label">Profile</span>
     </div>
     <div class="ni" id="n-admin" onclick="showView('admin')" style="display:none">
-      <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
-      Admin
+      <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+      <span class="ni-label">Admin</span>
     </div>
   </nav>
 </div>
 
+<!-- LISTING MODAL -->
 <div id="mover" class="mo" onclick="closeMo(event)">
   <div class="md">
-    <div class="mh"></div>
     <button class="mcl" onclick="closeMo()">✕</button>
     <div id="mbody"></div>
+  </div>
+</div>
+
+<!-- SHIPPING WIZARD MODAL -->
+<div id="wiz-modal" class="mo" onclick="closeWiz(event)">
+  <div class="md">
+    <button class="mcl" onclick="closeWiz()">✕</button>
+    <div id="wiz-body"></div>
   </div>
 </div>
 
@@ -269,7 +354,7 @@ textarea{resize:vertical;min-height:80px}
 const SB='https://qmjldudabxwnrbwzokbw.supabase.co';
 const SK='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFtamxkdWRhYnh3bnJid3pva2J3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzgwMTMwMjQsImV4cCI6MjA5MzU4OTAyNH0.GJ-yCYSjwwv0L9-gHhOOgVpCugMCAEdeU4KTKO4ELoc';
 const ADMINS=['elias','laird'];
-let CU=null,listings=[],curFilter='all',imgB64=null,curAdminTab='users';
+let CU=null,listings=[],curFilter='all',imgB64=null,curATab='users',notifs=[],buyingId=false;
 
 async function db(table,method='GET',body=null,qs=''){
   const r=await fetch(`${SB}/rest/v1/${table}${qs}`,{
@@ -280,6 +365,11 @@ async function db(table,method='GET',body=null,qs=''){
   if(!r.ok){const e=await r.json().catch(()=>({}));throw new Error(e.message||r.statusText)}
   return r.status===204?null:r.json();
 }
+
+// ── SESSION PERSISTENCE ──
+function saveSession(user){localStorage.setItem('posterum_user',JSON.stringify(user))}
+function loadSession(){try{return JSON.parse(localStorage.getItem('posterum_user'))}catch{return null}}
+function clearSession(){localStorage.removeItem('posterum_user')}
 
 function switchTab(t){
   document.querySelectorAll('.atab').forEach(x=>x.classList.remove('active'));
@@ -297,7 +387,7 @@ async function doLogin(){
   try{
     const r=await db('users','GET',null,`?username=eq.${u}&pin=eq.${p}`);
     if(!r.length){m.textContent='Invalid username or PIN';m.className='msg err';return}
-    CU=r[0];enterApp();
+    CU=r[0];saveSession(CU);enterApp();
   }catch(e){m.textContent=e.message;m.className='msg err'}
 }
 
@@ -313,7 +403,7 @@ async function doRegister(){
   m.textContent='Creating account...';m.className='msg';
   try{
     const r=await db('users','POST',{name:n,username:u,pin:p,martial_art:a,gym:g,points:500});
-    CU=r[0];enterApp();
+    CU=r[0];saveSession(CU);enterApp();
   }catch(e){
     m.textContent=e.message.includes('unique')?'Username already taken':e.message;
     m.className='msg err';
@@ -321,14 +411,20 @@ async function doRegister(){
 }
 
 function enterApp(){
-  const sa=document.getElementById('sa');
+  document.getElementById('sa').style.display='none';
   const sap=document.getElementById('sap');
-  sa.style.display='none';
-  sap.style.display='flex';
-  sap.classList.add('active');
+  sap.style.display='flex';sap.classList.add('active');
   updateBar();
   if(ADMINS.includes(CU.username))document.getElementById('n-admin').style.display='flex';
   loadListings();
+  loadNotifs();
+}
+
+async function refreshUser(){
+  try{
+    const [u]=await db('users','GET',null,`?id=eq.${CU.id}`);
+    CU=u;saveSession(CU);updateBar();
+  }catch(e){}
 }
 
 function updateBar(){
@@ -340,19 +436,21 @@ function showView(v){
   document.querySelectorAll('.view').forEach(x=>x.classList.remove('active'));
   document.querySelectorAll('.ni').forEach(x=>x.classList.remove('active'));
   document.getElementById('v-'+v).classList.add('active');
-  const n=document.getElementById('n-'+v);
-  if(n)n.classList.add('active');
+  const n=document.getElementById('n-'+v);if(n)n.classList.add('active');
   if(v==='profile')renderProfile();
   if(v==='admin')renderAdmin();
+  if(v==='notifs')renderNotifs();
+  if(v==='browse')loadListings();
 }
 
+// ── LISTINGS ──
 async function loadListings(){
   try{
     const d=await db('listings','GET',null,'?order=created_at.desc&status=eq.available');
     const ids=[...new Set(d.map(l=>l.seller_id))];
-    let smap={};
-    if(ids.length){const su=await db('users','GET',null,`?id=in.(${ids.join(',')})`);su.forEach(u=>smap[u.id]=u)}
-    listings=d.map(l=>({...l,seller:smap[l.seller_id]}));
+    let sm={};
+    if(ids.length){const su=await db('users','GET',null,`?id=in.(${ids.join(',')})`);su.forEach(u=>sm[u.id]=u)}
+    listings=d.map(l=>({...l,seller:sm[l.seller_id]}));
     renderListings();
   }catch(e){document.getElementById('lgrid').innerHTML=`<div class="ld">Error: ${e.message}</div>`}
 }
@@ -360,8 +458,7 @@ async function loadListings(){
 function setFilter(f,el){
   curFilter=f;
   document.querySelectorAll('.fc').forEach(c=>c.classList.remove('active'));
-  el.classList.add('active');
-  renderListings();
+  el.classList.add('active');renderListings();
 }
 
 function cond(c){return{New:'cn','Like New':'cl',Good:'cg','Well Worn':'cw'}[c]||'cg'}
@@ -370,7 +467,7 @@ function emoji(c){return{Gi:'🥋','No-Gi':'👕',Rashguard:'🦺',Shorts:'🩳'
 function renderListings(){
   const g=document.getElementById('lgrid');
   const f=curFilter==='all'?listings:listings.filter(l=>l.category===curFilter);
-  if(!f.length){g.innerHTML=`<div class="es" style="grid-column:1/-1"><div class="ei">🥋</div><p>No listings yet. Be first to sell!</p></div>`;return}
+  if(!f.length){g.innerHTML=`<div class="es" style="grid-column:1/-1"><div class="es-icon">🥋</div><p>No listings yet. Be first to sell!</p></div>`;return}
   g.innerHTML=f.map(l=>`
     <div class="lc" onclick="openL('${l.id}')">
       <div class="li">${l.image_url?`<img src="${l.image_url}" alt="${l.title}"/>`:emoji(l.category)}</div>
@@ -387,10 +484,10 @@ function openL(id){
   const mine=l.seller_id===CU.id;
   const afford=CU.points>=l.price;
   document.getElementById('mbody').innerHTML=`
-    <div class="mimg">${l.image_url?`<img src="${l.image_url}"/>`:`<span style="font-size:80px">${emoji(l.category)}</span>`}</div>
-    <div class="mt">${l.title}</div>
-    <div class="ms">Listed by @${l.seller?.username||'?'} · ${l.seller?.gym||''}</div>
-    <div class="mp">${l.price} PP</div>
+    <div class="mimg">${l.image_url?`<img src="${l.image_url}"/>`:`<span style="font-size:72px">${emoji(l.category)}</span>`}</div>
+    <div class="mt2">${l.title}</div>
+    <div class="ms2">Listed by @${l.seller?.username||'?'} · ${l.seller?.gym||''}</div>
+    <div class="mp2">${l.price} PP</div>
     <div class="mtgs">
       ${l.category?`<span class="tag">${l.category}</span>`:''}
       ${l.size?`<span class="tag">${l.size}</span>`:''}
@@ -401,7 +498,7 @@ function openL(id){
     ${mine
       ?`<button class="btn bg" onclick="delL('${l.id}')">Remove My Listing</button>`
       :afford
-        ?`<button class="btn bp" onclick="doBuy('${l.id}')">Buy for ${l.price} PP</button>`
+        ?`<button class="btn bp" id="buy-btn-${l.id}" onclick="doBuy('${l.id}')">Buy for ${l.price} PP</button>`
         :`<div class="cfb">You need ${l.price-CU.points} more PP to buy this.</div>`
     }`;
   document.getElementById('mover').classList.add('open');
@@ -413,34 +510,247 @@ function closeMo(e){
 }
 
 async function doBuy(lid){
-  const l=listings.find(x=>x.id===lid);if(!l)return;
+  if(buyingId===lid)return; // prevent double tap
+  buyingId=lid;
+  const l=listings.find(x=>x.id===lid);if(!l){buyingId=false;return}
+  const btn=document.getElementById('buy-btn-'+lid);
+  if(btn){btn.disabled=true;btn.textContent='Processing...'}
   const m=document.getElementById('mam');
   m.textContent='Processing...';m.className='msg';
   try{
+    // Check listing still available
+    const [fresh]=await db('listings','GET',null,`?id=eq.${lid}&status=eq.available`);
+    if(!fresh){m.textContent='This item was just sold — sorry!';m.className='msg err';buyingId=false;return}
+
     await db('users','PATCH',{points:CU.points-l.price},`?id=eq.${CU.id}`);
     const [seller]=await db('users','GET',null,`?id=eq.${l.seller_id}`);
     await db('users','PATCH',{points:seller.points+l.price},`?id=eq.${l.seller_id}`);
     await db('listings','PATCH',{status:'sold'},`?id=eq.${lid}`);
     await db('transactions','POST',{listing_id:lid,buyer_id:CU.id,seller_id:l.seller_id,amount:l.price});
-    CU.points-=l.price;updateBar();
+
+    // Create notifications
+    await db('notifications','POST',{
+      user_id:CU.id,
+      type:'purchase',
+      title:'You bought an item! 🎉',
+      body:`You purchased "${l.title}" for ${l.price} PP. Time to arrange shipping!`,
+      listing_id:lid,
+      other_user:seller.username,
+      read:false
+    });
+    await db('notifications','POST',{
+      user_id:l.seller_id,
+      type:'sale',
+      title:'Your item sold! 🎉',
+      body:`@${CU.username} bought your "${l.title}" for ${l.price} PP. Ship it out!`,
+      listing_id:lid,
+      other_user:CU.username,
+      read:false
+    });
+
+    CU.points-=l.price;saveSession(CU);updateBar();
     listings=listings.filter(x=>x.id!==lid);
     renderListings();
-    m.textContent=`Purchased! Coordinate pickup with @${seller.username}.`;
-    m.className='msg ok';
-    document.querySelector('#mbody button')?.remove();
-  }catch(e){m.textContent=e.message;m.className='msg err'}
+    document.getElementById('mover').classList.remove('open');
+    buyingId=false;
+
+    // Show shipping wizard
+    openWizard(l,seller,'buyer');
+    loadNotifs();
+  }catch(e){
+    m.textContent=e.message;m.className='msg err';
+    buyingId=false;
+    if(btn){btn.disabled=false;btn.textContent=`Buy for ${l.price} PP`}
+  }
 }
 
 async function delL(id){
   if(!confirm('Remove this listing?'))return;
   try{
     await db('listings','PATCH',{status:'removed'},`?id=eq.${id}`);
-    listings=listings.filter(x=>x.id!==id);
-    renderListings();
+    listings=listings.filter(x=>x.id!==id);renderListings();
     document.getElementById('mover').classList.remove('open');
   }catch(e){alert(e.message)}
 }
 
+// ── SHIPPING WIZARD ──
+let wizStep=0;
+let wizData={};
+
+function openWizard(listing,otherUser,role){
+  wizStep=0;
+  wizData={listing,otherUser,role};
+  renderWizard();
+  document.getElementById('wiz-modal').classList.add('open');
+}
+
+function closeWiz(e){
+  if(!e||e.target===document.getElementById('wiz-modal'))
+    document.getElementById('wiz-modal').classList.remove('open');
+}
+
+function renderWizard(){
+  const {listing,otherUser,role}=wizData;
+  const steps=role==='buyer'
+    ?['Purchase Complete','Share Address','Await Shipment','Confirm Receipt']
+    :['Item Sold!','Get Address','Ship It','Done'];
+  const icons=role==='buyer'?['🎉','📬','📦','✅']:['💰','📬','📦','🏆'];
+  const bodies=role==='buyer'?[
+    `<div class="wiz-card"><div class="wiz-card-title">What happens next</div>
+      <p style="font-size:14px;line-height:1.8;color:#5a4a3a">
+        1. Share your shipping address with <strong>@${otherUser.username}</strong><br/>
+        2. They'll package and ship your item<br/>
+        3. Confirm receipt when it arrives<br/>
+        4. Leave feedback for the seller
+      </p>
+    </div>
+    <button class="btn bp" onclick="nextWiz()">Share My Address →</button>`,
+
+    `<div class="wiz-card"><div class="wiz-card-title">Your shipping address</div>
+      <label>Full Name</label><input type="text" id="wiz-name" placeholder="Your name" style="margin-bottom:10px"/>
+      <label>Street Address</label><input type="text" id="wiz-addr" placeholder="123 Main St" style="margin-bottom:10px"/>
+      <label>City, State, ZIP</label><input type="text" id="wiz-city" placeholder="Reno, NV 89501" style="margin-bottom:0"/>
+    </div>
+    <div style="font-size:12px;color:var(--gry);margin-bottom:14px">⚠️ This is a mock address for the beta — no real shipping yet.</div>
+    <button class="btn bp" onclick="submitAddress()">Send Address to Seller →</button>`,
+
+    `<div class="wiz-card"><div class="wiz-card-title">Waiting for shipment</div>
+      <p style="font-size:14px;line-height:1.8;color:#5a4a3a">
+        @${otherUser.username} has your address and will ship your item.<br/><br/>
+        Keep an eye on your notifications for a tracking update. Once it arrives, come back here to confirm receipt.
+      </p>
+    </div>
+    <button class="btn bp" onclick="nextWiz()">Mark as Received ✅</button>
+    <div style="height:10px"></div>
+    <button class="btn bg" onclick="closeWiz()">Close for now</button>`,
+
+    `<div class="wiz-card" style="text-align:center;padding:24px">
+      <div style="font-size:48px;margin-bottom:12px">🏆</div>
+      <div style="font-size:18px;font-weight:800;margin-bottom:8px">Transaction Complete!</div>
+      <p style="font-size:14px;color:var(--gry);line-height:1.6">Your item is on its way. The mat is calling.</p>
+    </div>
+    <button class="btn bp" onclick="closeWiz()">Back to Browsing</button>`
+  ]:[
+    `<div class="wiz-card"><div class="wiz-card-title">Congrats on the sale!</div>
+      <p style="font-size:14px;line-height:1.8;color:#5a4a3a">
+        <strong>@${otherUser.username}</strong> just bought <strong>${listing.title}</strong>.<br/><br/>
+        1. Wait for their shipping address<br/>
+        2. Package the item securely<br/>
+        3. Ship via USPS, UPS, or FedEx<br/>
+        4. Share the tracking number
+      </p>
+    </div>
+    <button class="btn bp" onclick="nextWiz()">Got it, what's next? →</button>`,
+
+    `<div class="wiz-card"><div class="wiz-card-title">Buyer's address (mock)</div>
+      <div class="mock-label">
+        <strong>📬 Ship to:</strong>
+        ${wizData.buyerAddress||'Waiting for buyer to submit address...'}
+      </div>
+    </div>
+    <div style="font-size:12px;color:var(--gry);margin-bottom:14px">In the beta, coordinate with the buyer directly for their real address.</div>
+    <button class="btn bp" onclick="nextWiz()">I've got their address →</button>`,
+
+    `<div class="wiz-card"><div class="wiz-card-title">Mock shipping label</div>
+      <div class="mock-label">
+        <strong>📦 POSTERUM SHIPPING LABEL</strong>
+        ════════════════════<br/>
+        FROM: @${CU.username}<br/>
+        TO: @${otherUser.username}<br/>
+        ITEM: ${listing.title}<br/>
+        ════════════════════<br/>
+        TRACKING #: POST-${Math.random().toString(36).substring(2,10).toUpperCase()}<br/>
+        ════════════════════<br/>
+        <em>Mock label — beta only</em>
+      </div>
+    </div>
+    <button class="btn bp" onclick="nextWiz()">Marked as Shipped 📬</button>`,
+
+    `<div class="wiz-card" style="text-align:center;padding:24px">
+      <div style="font-size:48px;margin-bottom:12px">💰</div>
+      <div style="font-size:18px;font-weight:800;margin-bottom:8px">Sale Complete!</div>
+      <p style="font-size:14px;color:var(--gry);line-height:1.6">
+        ${listing.price} PP have been added to your account.<br/>Keep listing, keep earning!
+      </p>
+    </div>
+    <button class="btn bp" onclick="closeWiz()">Back to Profile</button>`
+  ];
+
+  document.getElementById('wiz-body').innerHTML=`
+    <div class="progress-bar">${steps.map((_,i)=>`<div class="prog-dot ${i<=wizStep?'done':''}" id="pd${i}"></div>`).join('')}</div>
+    <div class="wiz-header">
+      <div class="wiz-icon">${icons[wizStep]}</div>
+      <div class="wiz-step-count">Step ${wizStep+1} of ${steps.length}</div>
+      <div class="wiz-title">${steps[wizStep]}</div>
+    </div>
+    <div class="wizard">${bodies[wizStep]}</div>`;
+}
+
+function nextWiz(){wizStep++;renderWizard()}
+
+function submitAddress(){
+  const name=document.getElementById('wiz-name')?.value||'';
+  const addr=document.getElementById('wiz-addr')?.value||'';
+  const city=document.getElementById('wiz-city')?.value||'';
+  if(!name||!addr||!city){alert('Please fill in all address fields');return}
+  wizData.buyerAddress=`${name}\n${addr}\n${city}`;
+  wizStep++;renderWizard();
+}
+
+// ── NOTIFICATIONS ──
+async function loadNotifs(){
+  if(!CU)return;
+  try{
+    const n=await db('notifications','GET',null,`?user_id=eq.${CU.id}&order=created_at.desc`);
+    notifs=n;
+    const unread=n.filter(x=>!x.read).length;
+    const dot=document.getElementById('ndot');
+    if(dot)dot.className='notif-dot'+(unread?' show':'');
+  }catch(e){}
+}
+
+function renderNotifs(){
+  loadNotifs();
+  const el=document.getElementById('notif-list');
+  if(!notifs.length){el.innerHTML=`<div class="es"><div class="es-icon">🔔</div><p>No notifications yet</p></div>`;return}
+  el.innerHTML=notifs.map(n=>`
+    <div class="notif-item ${n.read?'':'unread'}" onclick="openNotif('${n.id}','${n.listing_id||''}','${n.type}')">
+      <div class="notif-title">${n.title}</div>
+      <div class="notif-body">${n.body}</div>
+      <div class="notif-time">${timeAgo(n.created_at)}</div>
+    </div>`).join('');
+  // mark all read
+  notifs.filter(x=>!x.read).forEach(n=>{
+    db('notifications','PATCH',{read:true},`?id=eq.${n.id}`).catch(()=>{});
+  });
+  document.getElementById('ndot').className='notif-dot';
+}
+
+async function openNotif(nid,lid,type){
+  if(lid&&lid!=='null'&&lid!=='undefined'){
+    // find listing to show wizard
+    try{
+      const [l]=await db('listings','GET',null,`?id=eq.${lid}`);
+      if(l){
+        const otherId=type==='purchase'?l.seller_id:l.buyer_id||CU.id;
+        const others=await db('users','GET',null,`?id=eq.${otherId}`);
+        const other=others[0]||{username:'user'};
+        const role=type==='purchase'?'buyer':'seller';
+        closeNotif();
+        openWizard(l,other,role);
+      }
+    }catch(e){}
+  }
+}
+function closeNotif(){}
+
+function timeAgo(ts){
+  const s=Math.floor((Date.now()-new Date(ts))/1000);
+  if(s<60)return'just now';if(s<3600)return`${Math.floor(s/60)}m ago`;
+  if(s<86400)return`${Math.floor(s/3600)}h ago`;return`${Math.floor(s/86400)}d ago`;
+}
+
+// ── SELL ──
 function prevImg(inp){
   const f=inp.files[0];if(!f)return;
   const r=new FileReader();
@@ -462,23 +772,21 @@ async function doList(){
     const pay={seller_id:CU.id,title:t,category:c,size:sz,condition:cn,price:pr,description:ds,status:'available'};
     if(imgB64)pay.image_url=imgB64;
     const [nl]=await db('listings','POST',pay);
-    listings.unshift({...nl,seller:CU});
-    renderListings();
+    listings.unshift({...nl,seller:CU});renderListings();
     ['stit','sprc','sdsc'].forEach(id=>document.getElementById(id).value='');
     ['scat','ssz','scnd'].forEach(id=>document.getElementById(id).value='');
-    document.getElementById('imgprev').style.display='none';
-    imgB64=null;
-    m.textContent='Listing posted!';m.className='msg ok';
+    document.getElementById('imgprev').style.display='none';imgB64=null;
+    m.textContent='Listing posted!';m.className='ok msg';
     setTimeout(()=>{m.textContent='';showView('browse')},1500);
   }catch(e){m.textContent=e.message;m.className='msg err'}
 }
 
+// ── PROFILE ──
 async function renderProfile(){
   const el=document.getElementById('pcon');
   el.innerHTML='<div class="ld">Loading...</div>';
+  await refreshUser();
   try{
-    const [u]=await db('users','GET',null,`?id=eq.${CU.id}`);
-    CU=u;updateBar();
     const ml=await db('listings','GET',null,`?seller_id=eq.${CU.id}&order=created_at.desc`);
     const tx=await db('transactions','GET',null,`?or=(buyer_id.eq.${CU.id},seller_id.eq.${CU.id})&order=created_at.desc`);
     const isA=ADMINS.includes(CU.username);
@@ -489,20 +797,20 @@ async function renderProfile(){
         <div class="phd">@${CU.username}</div>
         <div class="pg">${CU.martial_art||''} ${CU.gym?'· '+CU.gym:''}</div>
       </div>
-      <div class="pd"><div class="pn2">${CU.points}</div><div class="pl">Posterum Points</div></div>
-      <div class="sl">My Listings (${ml.length})</div>
+      <div class="ppts"><div class="ppts-n">${CU.points}</div><div class="ppts-l">Posterum Points</div></div>
+      <div class="sec-label">My Listings (${ml.length})</div>
       ${ml.length?ml.map(l=>`
         <div class="mlr">
           <div class="mlt">${l.image_url?`<img src="${l.image_url}"/>`:emoji(l.category)}</div>
           <div class="mli"><div class="mlti">${l.title}</div><div class="mlp">${l.price} PP</div></div>
-          <div class="sp ${l.status==='available'?'sav':'ssd'}">${l.status}</div>
+          <div class="sp ${l.status==='available'?'sav':l.status==='sold'?'ssd':'sshp'}">${l.status}</div>
         </div>`).join(''):'<div class="es"><p>No listings yet</p></div>'}
-      <br/><div class="sl">Transaction History</div>
+      <br/><div class="sec-label">Transactions</div>
       ${tx.length?tx.map(t=>{
         const iB=t.buyer_id===CU.id;
         return`<div class="tr"><div style="display:flex;justify-content:space-between;align-items:center">
-          <div><div class="trt">${iB?'Purchased item':'Sold item'}</div><div class="trm">${new Date(t.created_at).toLocaleDateString()}</div></div>
-          <div class="tra ${iB?'dr':'cr'}">${iB?'-':'+'}${t.amount} PP</div>
+          <div><div class="trt">${iB?'Purchased':'Sold'}</div><div class="trm">${new Date(t.created_at).toLocaleDateString()}</div></div>
+          <div class="tra ${iB?'txdr':'txcr'}">${iB?'-':'+'}${t.amount} PP</div>
         </div></div>`;
       }).join(''):'<div class="es"><p>No transactions yet</p></div>'}
       <br/><button class="btn bg" onclick="doLogout()">Sign Out</button>`;
@@ -510,23 +818,19 @@ async function renderProfile(){
 }
 
 function doLogout(){
-  CU=null;listings=[];
-  const sa=document.getElementById('sa');
-  const sap=document.getElementById('sap');
-  sap.style.display='none';
-  sa.style.display='flex';
+  clearSession();CU=null;listings=[];
+  document.getElementById('sap').style.display='none';
+  document.getElementById('sa').style.display='flex';
   document.getElementById('n-admin').style.display='none';
-  document.getElementById('lu').value='';
-  document.getElementById('lp').value='';
+  document.getElementById('lu').value='';document.getElementById('lp').value='';
   document.getElementById('lm').textContent='';
-  showView('browse');
 }
 
-function adminTab(t,el){
-  curAdminTab=t;
+// ── ADMIN ──
+function aTab(t,el){
+  curATab=t;
   document.querySelectorAll('.tbt').forEach(x=>x.classList.remove('active'));
-  el.classList.add('active');
-  renderAdmin();
+  el.classList.add('active');renderAdmin();
 }
 
 async function renderAdmin(){
@@ -534,7 +838,7 @@ async function renderAdmin(){
   const el=document.getElementById('acon');
   el.innerHTML='<div class="ld">Loading...</div>';
   try{
-    if(curAdminTab==='users'){
+    if(curATab==='users'){
       const us=await db('users','GET',null,'?order=created_at.desc');
       el.innerHTML=`<div class="adc">
         <div style="font-size:13px;color:var(--gry);margin-bottom:12px">${us.length} members</div>
@@ -545,14 +849,13 @@ async function renderAdmin(){
             <strong style="color:var(--red)">${u.points} PP</strong>
             <button class="btn bp bsm" onclick="addPP('${u.id}',${u.points})">+ PP</button>
           </div>
-        </div>`).join('')}
-      </div>`;
-    }else if(curAdminTab==='listings'){
+        </div>`).join('')}</div>`;
+    }else if(curATab==='listings'){
       const ls=await db('listings','GET',null,'?order=created_at.desc');
       el.innerHTML=ls.length?ls.map(l=>`
         <div class="adc" style="padding:14px">
-          <div style="display:flex;justify-content:space-between;align-items:flex-start">
-            <div><strong>${l.title}</strong><br/><span style="font-size:12px;color:var(--gry)">${l.category||''} · ${l.size||''} · ${l.condition||''}</span></div>
+          <div style="display:flex;justify-content:space-between">
+            <div><strong>${l.title}</strong><br/><span style="font-size:12px;color:var(--gry)">${l.category||''} · ${l.size||''}</span></div>
             <div style="text-align:right"><div style="font-weight:700;color:var(--red)">${l.price} PP</div>
             <div class="sp ${l.status==='available'?'sav':'ssd'}" style="display:inline-block;margin-top:4px">${l.status}</div></div>
           </div>
@@ -567,18 +870,18 @@ async function renderAdmin(){
         <div class="tr"><div style="display:flex;justify-content:space-between;align-items:center">
           <div><div class="trt">@${um[t.buyer_id]?.username||'?'} → @${um[t.seller_id]?.username||'?'}</div>
           <div class="trm">${new Date(t.created_at).toLocaleDateString()}</div></div>
-          <div class="tra cr">${t.amount} PP</div>
-        </div></div>`).join(''):'<div class="es"><p>No transactions yet</p></div>';
+          <div class="tra txcr">${t.amount} PP</div>
+        </div></div>`).join(''):'<div class="es"><p>No transactions</p></div>';
     }
   }catch(e){el.innerHTML=`<div class="ld">Error: ${e.message}</div>`}
 }
 
 async function addPP(uid,cur){
-  const a=prompt('How many Posterum Points to add?','100');
+  const a=prompt('Posterum Points to add?','100');
   if(!a||isNaN(parseInt(a)))return;
   try{
     await db('users','PATCH',{points:cur+parseInt(a)},`?id=eq.${uid}`);
-    if(uid===CU.id){CU.points+=parseInt(a);updateBar()}
+    if(uid===CU.id){CU.points+=parseInt(a);saveSession(CU);updateBar()}
     renderAdmin();
   }catch(e){alert(e.message)}
 }
@@ -589,7 +892,23 @@ async function adminDel(id){
   catch(e){alert(e.message)}
 }
 
+// ── INIT ──
+(async function init(){
+  const saved=loadSession();
+  if(saved){
+    CU=saved;
+    try{
+      const [fresh]=await db('users','GET',null,`?id=eq.${CU.id}`);
+      if(fresh){CU=fresh;saveSession(CU);enterApp();return}
+    }catch(e){}
+  }
+  // show auth
+  document.getElementById('sa').style.display='flex';
+})();
+
 document.addEventListener('keydown',e=>{
   if(e.key==='Enter'&&document.getElementById('ap-login').classList.contains('active'))doLogin();
 });
 </script>
+</body>
+</html>
