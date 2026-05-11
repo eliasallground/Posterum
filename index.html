@@ -354,6 +354,40 @@ textarea{resize:vertical;min-height:80px}
 const SB='https://qmjldudabxwnrbwzokbw.supabase.co';
 const SK='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFtamxkdWRhYnh3bnJid3pva2J3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzgwMTMwMjQsImV4cCI6MjA5MzU4OTAyNH0.GJ-yCYSjwwv0L9-gHhOOgVpCugMCAEdeU4KTKO4ELoc';
 const ADMINS=['elias','laird'];
+
+// ============================================================
+// CANONICAL STATUS VALUES — single source of truth
+// Any code that reads or writes a status MUST use these.
+// Do not invent new values in ad-hoc code.
+// ============================================================
+const LISTING_STATUS = {
+  AVAILABLE:          'available',           // For sale, visible in Browse
+  SOLD_PENDING_SHIP:  'sold_pending_ship',   // Bought, seller hasn't shipped yet
+  SOLD_SHIPPED:       'sold_shipped',        // Shipped, in transit or with buyer
+  SOLD_COMPLETED:     'sold_completed',      // Transaction finalized
+  SOLD_DISPUTED:      'sold_disputed',       // Dispute open
+  REMOVED:            'removed'              // Seller or admin took down
+};
+
+const TRANSACTION_STATUS = {
+  PENDING_SHIP_AGREEMENT: 'pending_ship_agreement', // Sale made, seller hasn't agreed to ship deadline
+  EXTENSION_REQUESTED:    'extension_requested',    // Seller asked buyer for more time
+  AWAITING_SHIPMENT:      'awaiting_shipment',      // Seller agreed, hasn't shipped yet
+  SHIPPED:                'shipped',                // Tracking uploaded, in transit
+  DELIVERY_CHECK:         'delivery_check',         // 7 days post-ship, waiting on buyer
+  REVIEW_WINDOW:          'review_window',          // Buyer confirmed, 3-day inspection
+  DISPUTED:               'disputed',               // Buyer reported a problem
+  COMPLETED:              'completed',              // Points released to seller
+  CANCELLED:              'cancelled'               // Sale cancelled, refunded
+};
+
+const DISPUTE_STATUS = {
+  AWAITING_SELLER: 'awaiting_seller',  // Just filed, seller has 48h to respond
+  AWAITING_BUYER:  'awaiting_buyer',   // Seller offered partial, buyer deciding
+  AWAITING_ADMIN:  'awaiting_admin',   // Escalated to admin
+  RESOLVED:        'resolved'          // Terminal
+};
+
 let CU=null,listings=[],curFilter='all',imgB64=null,curATab='users',notifs=[],buyingId=false;
 
 async function db(table,method='GET',body=null,qs=''){
@@ -494,6 +528,11 @@ function openL(id){
       ${l.condition?`<span class="tag cb ${cond(l.condition)}">${l.condition}</span>`:''}
     </div>
     ${l.description?`<div class="mds">${l.description}</div>`:''}
+    ${!mine && afford ? `
+      <div style="background:var(--crm);border:1px solid var(--bdr);border-radius:10px;padding:12px 14px;margin-bottom:12px;font-size:12px;color:#5a4a3a;line-height:1.5">
+        <strong style="color:var(--blk)">🔒 Protected by escrow.</strong> Your ${l.price} PP will be held safely until you confirm the item arrives as described. Seller is paid only after delivery.
+      </div>
+    ` : ''}
     <div id="mam" class="msg" style="margin-bottom:12px"></div>
     ${mine
       ?`<button class="btn bg" onclick="delL('${l.id}')">Remove My Listing</button>`
@@ -512,56 +551,91 @@ function closeMo(e){
 async function doBuy(lid){
   if(buyingId===lid)return; // prevent double tap
   buyingId=lid;
-  const l=listings.find(x=>x.id===lid);if(!l){buyingId=false;return}
+  const listing=listings.find(x=>x.id===lid);
+  if(!listing){buyingId=false;return}
   const btn=document.getElementById('buy-btn-'+lid);
   if(btn){btn.disabled=true;btn.textContent='Processing...'}
-  const m=document.getElementById('mam');
-  m.textContent='Processing...';m.className='msg';
+  const messageEl=document.getElementById('mam');
+  messageEl.textContent='Processing...';messageEl.className='msg';
+
   try{
-    // Check listing still available
-    const [fresh]=await db('listings','GET',null,`?id=eq.${lid}&status=eq.available`);
-    if(!fresh){m.textContent='This item was just sold — sorry!';m.className='msg err';buyingId=false;return}
-
-    await db('users','PATCH',{points:CU.points-l.price},`?id=eq.${CU.id}`);
-    const [seller]=await db('users','GET',null,`?id=eq.${l.seller_id}`);
-    await db('users','PATCH',{points:seller.points+l.price},`?id=eq.${l.seller_id}`);
-    await db('listings','PATCH',{status:'sold'},`?id=eq.${lid}`);
-    await db('transactions','POST',{listing_id:lid,buyer_id:CU.id,seller_id:l.seller_id,amount:l.price});
-
-    // Create notifications
-    await db('notifications','POST',{
-      user_id:CU.id,
-      type:'purchase',
-      title:'You bought an item! 🎉',
-      body:`You purchased "${l.title}" for ${l.price} PP. Time to arrange shipping!`,
-      listing_id:lid,
-      other_user:seller.username,
-      read:false
-    });
-    await db('notifications','POST',{
-      user_id:l.seller_id,
-      type:'sale',
-      title:'Your item sold! 🎉',
-      body:`@${CU.username} bought your "${l.title}" for ${l.price} PP. Ship it out!`,
-      listing_id:lid,
-      other_user:CU.username,
-      read:false
+    // Single atomic call: validates, deducts points (escrow hold), marks listing sold,
+    // creates transaction with pending_ship_agreement status + 5-day ship deadline,
+    // logs the event, and creates notifications for both parties. Either all of this
+    // succeeds or none of it does.
+    const result=await db('rpc/purchase_listing','POST',{
+      p_listing_id: lid,
+      p_buyer_id:   CU.id
     });
 
-    CU.points-=l.price;saveSession(CU);updateBar();
+    if(!result.ok){
+      // Map known error codes to friendly messages
+      const errorMessages={
+        listing_not_found:      'This listing no longer exists.',
+        listing_not_available:  'This item was just sold — sorry!',
+        cannot_buy_own_listing: 'You can\'t buy your own listing.',
+        buyer_not_found:        'Account error. Please sign out and back in.',
+        insufficient_points:    'You don\'t have enough Posterum Points.',
+        seller_not_found:       'Seller account not found.',
+        unexpected_error:       'Something went wrong: '+(result.message||'unknown error')
+      };
+      messageEl.textContent=errorMessages[result.error]||'Purchase failed. Please try again.';
+      messageEl.className='msg err';
+      buyingId=false;
+      if(btn){btn.disabled=false;btn.textContent='Buy for '+listing.price+' PP'}
+      return;
+    }
+
+    // Success — sync local state to match what the server now has
+    CU.points=result.new_buyer_points;
+    saveSession(CU);
+    updateBar();
+
+    // Remove sold listing from the browse grid
     listings=listings.filter(x=>x.id!==lid);
     renderListings();
+
+    // Close the listing modal
     document.getElementById('mover').classList.remove('open');
     buyingId=false;
 
-    // Show shipping wizard
-    openWizard(l,seller,'buyer');
+    // Show a brief confirmation toast-style message via the wizard modal.
+    // The full ship-agreement modal will be built in Phase 3; for now,
+    // we show a placeholder that explains what just happened.
+    showPurchaseConfirmation(result, listing.price);
     loadNotifs();
   }catch(e){
-    m.textContent=e.message;m.className='msg err';
+    messageEl.textContent=e.message;
+    messageEl.className='msg err';
     buyingId=false;
-    if(btn){btn.disabled=false;btn.textContent=`Buy for ${l.price} PP`}
+    if(btn){btn.disabled=false;btn.textContent='Buy for '+listing.price+' PP'}
   }
+}
+
+// Temporary post-purchase confirmation. Will be replaced in Phase 3 by the
+// real ship-agreement modal (for sellers) and a richer buyer-side view.
+function showPurchaseConfirmation(result, amountPaid){
+  const shipBy=new Date(result.ship_deadline).toLocaleDateString('en-US',{
+    weekday:'long', month:'short', day:'numeric'
+  });
+  document.getElementById('wiz-body').innerHTML=`
+    <div class="wiz-header">
+      <div class="wiz-icon">🔒</div>
+      <div class="wiz-title">Purchase Complete</div>
+      <div class="wiz-sub">Your points are safe in escrow</div>
+    </div>
+    <div class="wiz-card">
+      <div class="wiz-card-title">What happens now</div>
+      <p style="font-size:14px;line-height:1.7;color:#5a4a3a">
+        You bought <strong>${result.listing_title}</strong> from <strong>@${result.seller_username}</strong>.
+        <br/><br/>
+        <strong>${amountPaid} PP</strong> have been deducted from your balance and are being held safely in escrow — they will NOT go to the seller until you confirm the item arrives as described.
+        <br/><br/>
+        @${result.seller_username} has until <strong>${shipBy}</strong> to ship your item. You'll be notified when it ships and again when it's time to confirm delivery.
+      </p>
+    </div>
+    <button class="btn bp" onclick="closeWiz()">Got it</button>`;
+  document.getElementById('wiz-modal').classList.add('open');
 }
 
 async function delL(id){
@@ -727,17 +801,21 @@ function renderNotifs(){
 }
 
 async function openNotif(nid,lid,type){
+  // The old shipping wizard (mock addresses, fake tracking labels) is being
+  // phased out as we build the real trust system. For now, tapping a
+  // purchase/sale notification just opens the related listing.
+  // Phase 3 will add the ship-agreement modal here for seller notifications;
+  // Phase 5 will add the delivery-confirmation flow for buyer notifications.
   if(lid&&lid!=='null'&&lid!=='undefined'){
-    // find listing to show wizard
     try{
       const [l]=await db('listings','GET',null,`?id=eq.${lid}`);
       if(l){
-        const otherId=type==='purchase'?l.seller_id:l.buyer_id||CU.id;
-        const others=await db('users','GET',null,`?id=eq.${otherId}`);
-        const other=others[0]||{username:'user'};
-        const role=type==='purchase'?'buyer':'seller';
-        closeNotif();
-        openWizard(l,other,role);
+        // Hydrate the listing with the seller so openL works
+        const [seller]=await db('users','GET',null,`?id=eq.${l.seller_id}`);
+        l.seller=seller;
+        // Temporarily add to local listings array if not already there
+        if(!listings.find(x=>x.id===l.id))listings.unshift(l);
+        openL(l.id);
       }
     }catch(e){}
   }
@@ -781,6 +859,22 @@ async function doList(){
   }catch(e){m.textContent=e.message;m.className='msg err'}
 }
 
+// Maps the canonical listing status values to user-facing label + CSS class.
+// Used in the profile's "My Listings" section and admin views.
+function listingStatusBadge(status){
+  const map={
+    'available':         {label:'Available',  cls:'sav'},
+    'sold_pending_ship': {label:'Sold — Awaiting Ship', cls:'sshp'},
+    'sold_shipped':      {label:'Shipped',    cls:'sshp'},
+    'sold_completed':    {label:'Sold',       cls:'ssd'},
+    'sold_disputed':     {label:'In Dispute', cls:'ssd'},
+    'removed':           {label:'Removed',    cls:'ssd'},
+    // Legacy value, kept so historical listings still display correctly
+    'sold':              {label:'Sold',       cls:'ssd'}
+  };
+  return map[status]||{label:status,cls:'ssd'};
+}
+
 // ── PROFILE ──
 async function renderProfile(){
   const el=document.getElementById('pcon');
@@ -799,12 +893,14 @@ async function renderProfile(){
       </div>
       <div class="ppts"><div class="ppts-n">${CU.points}</div><div class="ppts-l">Posterum Points</div></div>
       <div class="sec-label">My Listings (${ml.length})</div>
-      ${ml.length?ml.map(l=>`
-        <div class="mlr">
+      ${ml.length?ml.map(l=>{
+        const badge=listingStatusBadge(l.status);
+        return`<div class="mlr">
           <div class="mlt">${l.image_url?`<img src="${l.image_url}"/>`:emoji(l.category)}</div>
           <div class="mli"><div class="mlti">${l.title}</div><div class="mlp">${l.price} PP</div></div>
-          <div class="sp ${l.status==='available'?'sav':l.status==='sold'?'ssd':'sshp'}">${l.status}</div>
-        </div>`).join(''):'<div class="es"><p>No listings yet</p></div>'}
+          <div class="sp ${badge.cls}">${badge.label}</div>
+        </div>`;
+      }).join(''):'<div class="es"><p>No listings yet</p></div>'}
       <br/><div class="sec-label">Transactions</div>
       ${tx.length?tx.map(t=>{
         const iB=t.buyer_id===CU.id;
@@ -852,15 +948,18 @@ async function renderAdmin(){
         </div>`).join('')}</div>`;
     }else if(curATab==='listings'){
       const ls=await db('listings','GET',null,'?order=created_at.desc');
-      el.innerHTML=ls.length?ls.map(l=>`
+      el.innerHTML=ls.length?ls.map(l=>{
+        const badge=listingStatusBadge(l.status);
+        return`
         <div class="adc" style="padding:14px">
           <div style="display:flex;justify-content:space-between">
             <div><strong>${l.title}</strong><br/><span style="font-size:12px;color:var(--gry)">${l.category||''} · ${l.size||''}</span></div>
             <div style="text-align:right"><div style="font-weight:700;color:var(--red)">${l.price} PP</div>
-            <div class="sp ${l.status==='available'?'sav':'ssd'}" style="display:inline-block;margin-top:4px">${l.status}</div></div>
+            <div class="sp ${badge.cls}" style="display:inline-block;margin-top:4px">${badge.label}</div></div>
           </div>
           ${l.status==='available'?`<button class="btn bg bsm" style="margin-top:10px" onclick="adminDel('${l.id}')">Remove</button>`:''}
-        </div>`).join(''):'<div class="es"><p>No listings</p></div>';
+        </div>`;
+      }).join(''):'<div class="es"><p>No listings</p></div>';
     }else{
       const txs=await db('transactions','GET',null,'?order=created_at.desc');
       const uids=[...new Set([...txs.map(t=>t.buyer_id),...txs.map(t=>t.seller_id)])];
